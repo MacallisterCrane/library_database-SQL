@@ -1,0 +1,255 @@
+1) SELECT *
+	FROM clients;
+
+CREATE VIEW allcontents AS
+	SELECT *
+	FROM clients;
+
+CREATE INDEX all_content ON clients
+
+	~~The purpose of this query is to retrieve (SELECT) and show all the contents (*) from the clients table (FROM clients)~~
+
+
+2) SELECT ClientFirstName, ClientLastName, ClientDoB, Occupation
+	FROM clients;
+
+CREATE VIEW nameagejob AS
+	SELECT
+	ClientFirstName,
+	ClientLastName,
+	ClientDoB
+	FROM clients
+
+CREATE INDEX nameage_jobs ON clients
+
+	~~This query retrieves (SELECT) the specified individual columns (ClientFirstName, ClientLastName, ClientDoB, Occupation) out of the clients table (FROM clients)~~
+
+
+3) SELECT clients.ClientFirstName, clients.ClientLastName
+	FROM clients
+	INNER JOIN borrowers
+	ON borrowers.ClientID = clients.ClientID
+	WHERE BorrowDate >= '2018-03-01' and BorrowDate < '2018-04-01';
+
+CREATE VIEW borrowingclients AS
+	SELECT
+	ClientFirstName,
+	ClientLastName
+	FROM clients
+
+CREATE INDEX borrowing_client ON clients
+
+	~~The SELECT statement returns the specified columns (ClientFirstName, ClientLastName) from the Clients table (clients. , clients. , FROM clients). The INNER JOIN command returns all rows from the corresponding tables due to their matching column (.ClientID) in both the borrowers table (borrowers.) and the clients table (clients.) using the = to link the syntax. The WHERE clause is used to filter the records and returns the exact data that is specified. The BorrowDate within the WHERE clause is signifying the column we want to specify returning data that is great than or equal to (>=) the date of 2018-03-01 and less than (<) 2018-04-01, which would return any days in the month of March (-03-).
+
+
+4) SELECT authors.AuthorsFirstName, authors.AuthorsLastName, COUNT(*) books.BookID
+	FROM authors
+	INNER JOIN books
+	ON books.AuthorID = authors.AuthorID
+	INNER JOIN borrowers
+	ON borrowers.BookID = books.BookID
+	WHERE borrowers.BorrowDate >= '2017-01-01' and borrowers.BorrowDate < '2018-01-01'
+	GROUP BY books.BookID, authors.AuthorFirstName, authors.AuthorLastName
+	ORDER BY COUNT(*) DESC
+	LIMIT 5
+
+CREATE VIEW topauthors AS
+	SELECT
+	AuthorFirstName,
+	AuthorLastName,
+	FROM authors
+
+CREATE INDEX top_author ON authors
+	
+	~~This statement is returning (SELECT) columns (AuthorFirstName, AuthorLastName, BookID) out of the authors table (FROM authors) but specifying the return of (COUNT) all (*) records within the BookID column. The INNER JOIN commands here are returning all the rows from the books and borrowers tables linking on the matching columns (.AuthorID, .BookID). The WHERE clause is filtering the BorrowDate column (.BorrowDate) within the borrowers table (borrowers.) to be greater than or equal to (>=) 2017-01-01 and less than (<) 2018-01-01. The GROUP BY clause is used here to group the sets of rows within the specified columns (BookID, AuthorFirstName, AuthorLastName) within the different tables based on the aggregate function (COUNT). The ORDER BY clause is used here to sort the rows in the resulting set of columns in descending order (DESC). The LIMIT clause specifies how many rows I want returned (5) which would return the top 5 rows within the descending order used in the ORDER BY clause.
+
+
+5) SELECT authors.AuthorNationality, COUNT(*) books.BookID
+	FROM authors
+	INNER JOIN books
+	ON books.AuthorID = authors.AuthorID
+	INNER JOIN borrowers
+	ON borrowers.BookID = books.BookID
+	WHERE borrowers.BorrowDate >= '2015-01-01' and < '2017-01-01'
+	GROUP BY authors.AuthorNationality
+	ORDER BY COUNT(*) ASC
+	LIMIT 5
+
+ CREATE VIEW topauthornationalities AS
+	SELECT
+	AuthorFirstName,
+	AuthorLastName,
+	AuthorNationality
+	FROM authors
+
+CREATE INDEX topauthors_nationalities ON authors
+
+	~~This query returns(SELECT) the AuthorNationality and BookID column (out of the books table (books.)) from the authors table (FROM authors) while also returning all the data (INNER JOIN) from the books and borrowers table specifying the dates (WHERE) be greater than the paramter of 2015-01-01 and less than 2017-01-01 for the borrowersDate column in the borrowers table, grouping the AuthorNationality columns rows from the authors table (authors.). The BookID column will be returned in an ascending (ASC) order (ORDER BY) after all rows (*) are counted (COUNT) as seen in the first line while limiting the return rows (LIMIT) to only the top 5 (5) rows that are listed the ascending order.
+
+
+6) SELECT books.BookTitle, COUNT(*) borrowers.BookID
+	FROM books
+	INNER JOIN borrowers
+	ON borrowers.BookID = books.BookID
+	WHERE borrowers.BorrowDate >= '2015-01-01' and borrowers.BorrowDate < '2017-01-01'
+	ORDER BY COUNT(*) DESC
+	LIMIT 1
+
+CREATE VIEW mostborrowedbook AS
+	SELECT
+	BookTitle
+	FROM books
+
+CREATE INDEX most_borrowedbook ON books
+
+	~~This query retrieves(SELECT) the BookTitle and BookID (borrowers table) columns from the books table and also returning all the data (INNER JOIN) from the borrowers table specifying the BorrowDate column within the borrowers table to be greater than or equal to (>=) 2015-01-01 and less than (<) 2017-01-01. The count (COUNT) of all (*) BookID in the borrowers table(borrowers.) is returned in descending order (DESC) limiting the return rows (LIMIT) to only the first row(1) in descending order after counting.
+
+
+7) SELECT COUNT(*) books.Genre
+	FROM books
+	INNER JOIN borrowers
+	ON borrowers.BookID = books.BookID
+	INNER JOIN clients
+	ON clients.ClientID = borrowers.ClientID
+	WHERE clients.ClientDoB >= '1969' and clients.ClientDoB < '1980'
+	ORDER BY COUNT(*) DESC
+
+CREATE VIEW topborrowedgenres AS
+	SELECT
+	Genre
+	FROM books
+
+CREATE INDEX tops_borrowedgenres ON books
+
+	~~This query retrieves(SELECT) and counts(COUNT) the number of all(*) genre types(.Genre) out of the books table(FROM books) collecting all table data(INNER JOIN) from the borrowers and clients tables due to the matching columns (.BookID, .ClientID) only returning the exact data(WHERE) from the column ClientDoB that is greater than(>=) 1969 and less than 1980. The count of the genre column is ordered(ORDER BY) in descending order(DESC).
+
+
+8) SELECT clients.Occupation, COUNT(borrowers.ClientID)
+	FROM clients
+	INNER JOIN borrowers
+	ON borrowers.ClientID = clients.ClientID
+	WHERE borrowers.BorrowDate >= '2016-01-01' and borrowers.BorrowDate < '2017-01-01'
+	GROUP BY clients.Occupation
+	ORDER BY COUNT(borrowers.ClientID) DESC
+	LIMIT 5
+
+CREATE VIEW topoccupations AS
+	SELECT Occupation
+	FROM clients
+
+CREATE INDEX top_occupation ON clients
+
+	~~This query retrieves(SELECT) the Occupations column and the ClientID column(from borrowers table) from the clients table(FROM clients) while specifically counting(COUNT) all(*) the ClientID rows in the column. The Tables are reachable (INNER JOIN) due to their matching columns(ON). The WHERE clause is specifying only the data that matches the BorrowDate column in the borrowers table that is greater than (>=) 2016-01-01 and less than(>) 2017-01-01 be returned. The data is grouped(GROUP BY) by the Occupation column in the clients table(clients.) and the count of the ClientID column in the borrowers table(borrowers.) be returned in descending order(DESC) also limiting the data(LIMIT) to return only 5 of those entries(5).  
+
+
+9) SELECT clients.Occupation, AVG(borrowers.BookID)
+	FROM clients
+	INNER JOIN 
+	(SELECT COUNT(*) borrowers.BookID
+	FROM borrowers
+	GROUP BY BookID)
+	borrowers
+	ON borrowers.ClientID = clients.ClientID
+	GROUP BY clients.Occupation
+
+CREATE VIEW averageborrowed AS
+	SELECT BookID
+	FROM borrowers
+
+CREATE INDEX averages_borrowed ON borrowers
+
+	~~This query retrieves(SELECT) the Occupations column and the average(AVG) of the aggregate expression from the clients table. INNERJOIN is linking the borrowers and clients tables while subquerying the BookID column within the borrowers table and counting(COUNT) its rows. The subquery is grouped by BookID while the entire query is grouped by te Occupations column within the clients table.
+
+
+10) SELECT books.BookTitle, COUNT(books.BookID)
+	FROM books
+	INNER JOIN borrowers
+	ON books.BookID = borrowers.BookID
+	INNER JOIN clients
+	ON borrowers.ClientID = clients.ClientID
+	GROUP BY books.BookTitle
+	HAVING COUNT(books.BookID) >
+	(SELECT COUNT(Client.ClientID)
+	FROM clients)*0.2
+	ORDER BY COUNT(books.BookTitle) DESC
+
+CREATE VIEW titlesborrowed AS
+	SELECT
+	BookTitle,
+	BookID
+	FROM books
+
+CREATE INDEX title_borrowed ON books
+
+~~ This query retrieves(SELECT) the BookTitle and BookID column while also counting(COUNT) the BookID column, both collected from the books table. INNER JOIN is collecting all information from the borrowers and clients tables. The grouping of the data is by BookTitle (GROUP BY). The HAVING clause is specifying a condition on the previous GROUP BY clause initiating a count of the BookID column and being greater than a count of the ClientID column within the subquery, *0.2 indicates a multiplication operator multiplying the result by 0.2 (20%). The return is ordered by the count of the BookTitle column in descending order.
+
+
+11) SELECT Month(BorrowDate)
+	FROM borrowers
+	WHERE YEAR(BorrowDate) = '2017'
+	GROUP BY Month(BorrowDate)
+	ORDER BY COUNT(*) DESC
+
+CREATE VIEW topmonthborrowed AS
+	SELECT 
+	BorrowDate
+	FROM borrowers
+
+CREATE INDEX top_monthsborrowed ON borrowers
+
+	~~This query retrieves(SELECT) the Month from the BorrowDate column from the borrowers table. This only returns data that matches(WHERE) when the borrowdate has a year of 2017 and grouped by the corresponding months which is returned in descending order after counting all(COUNT*) the entries.
+
+
+12) SELECT clients.DoB, AVG(borrowers.BookID)
+	FROM clients
+	INNER JOIN 
+	(SELECT ClientID, COUNT(*) BookID
+	FROM borrowers
+	GROUP BY ClientID)
+	borrowers
+	ON borrowers.ClientID = clients.ClientID
+	GROUP BY clients.DoB
+
+CREATE VIEW averageborrowage AS
+	SELECT BookID IN(
+	SELECT ClientDoB
+	FROM clients)
+	FROM books
+
+CREATE INDEX averages_borrowage ON books
+	
+	~~This query retrieves(SELECT) the DoB and the Average(AVG) of BookID column(borrowers table) from the clients table. The clients table is joined with the borrowers table due to the ClientID column. Within the Join the subquery specifies that the ClientID, and count of all the rows within the BookID column from the borrowers table be retrieved. This is finally grouped by the DoB column within the clients table.
+
+
+13) SELECT ClientFirstName, ClientLastName, ClientDoB
+	FROM clients
+	WHERE ClientDoB = (
+	SELECT MIN(ClientDob), MAX(ClientDoB)
+	FROM clients)
+
+CREATE VIEW oldyoungclients AS
+	SELECT ClientDoB
+	FROM clients
+
+CREATE INDEX oldyoung_client ON clients
+
+	~~This query retrieves(SELECT) the ClientFirstName, ClientLastName and ClientDoB columns from the clients table only returning data that matches(WHERE) on the ClientDoB column corresponding with the minimum(MIN) value within the column and the maximum(MAX) value.
+
+
+14) SELECT authors.AuthorFirstName, authors.AuthorLastName
+	FROM authors
+	INNER JOIN books
+	ON authors.AuthorID = books.AuthorID
+	GROUP BY authors.AuthorFirstName, authors.AuthorLastName
+	HAVING COUNT(books.BookAuthor) > 1
+
+CREATE VIEW multiauthorgenre AS
+	SELECT Genre IN (
+	SELECT AuthorFirstName,
+	AuthorLastName
+	FROM authors)
+	FROM books
+
+CREATE INDEX multi_authorsgenres ON books
+	
+	~~This query retrieves the AuthorFirstName and AuthorLastName from the authors table. INNERJOIN is collecting all the data from the books table due to its matching AuthorID column. This is grouped in its return(GROUPED BY) within the AuthorFirstName and AuthorLastName columns. The HAVING clause is specifying a condition on GROUPBY stating to count the BookAuthor column from the books table when greater than one entry(> 1).
